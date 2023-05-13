@@ -1,0 +1,275 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="row justify-content-center">
+    <div class="col-10">
+        <form class="card text-bg-light mb-3" id="frmBuscar">
+            <div class="ccard-header text-center fw-bold h1 bg-primary text-light">Mantenimiento de Usuarios</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-3 ">
+                        <label for="txtNombreB" class="form-label">Nombre:</label>
+                        <input type="text" class="form-control" id="txtNombreB" name="Nombre">
+                    </div>
+                    <div class="col-3 ">
+                        <label for="txtApellidoB" class="form-label">Apellido:</label>
+                        <input type="text" class="form-control" id="txtApellidoB" name="Apellido">
+                    </div>
+                    <div class="col-3">
+                        <label for="slRolB" class="form-label"> Seleccionar Rol:</label>
+                        <select id="slRolB" name="IdRol" class="form-select"></select>
+                    </div>
+                    <div class="col-3 d-flex align-items-end">
+                        <button type="button" id="btnBuscar" class="btn btn-primary me-2">Buscar</button>
+                        <button type="button" id="btnNuevo" class="btn btn-secondary">Nuevo</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+
+    <div class="col-10">
+        <table class="table table-striped table-bordered" id="tbDatosMostrar">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Rol</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+    </div>
+</div>
+
+<div class="modal" tabindex="-1" id="mdlMantUsuario">
+    <form class="modal-dialog" id="frmMantUsuario">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="mdlTitulo">Nuevo Usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" arial-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="txtId" name="Id" />
+                <div class="row g-3">
+                    <div class="col-6">
+                        <label for="txtNombre" class="form-label">Nombre:</label>
+                        <input type="text" class="form-control" id="txtNombre" name="Nombre" required>
+                    </div>
+                    <div class="col-6">
+                        <label for="txtCorreo" class="form-label">Correo:</label>
+                        <input type="text" class="form-control" id="txtCorreo" name="Correo" required>
+                    </div>
+                    <div class="col-6">
+                        <label for="slRol" class="form-label">Seleccionar Rol: </label>
+                        <select id="slRol" name="IdRol" class="form-select" style="width:100%;"></select>
+                    </div>
+                    <div class="col-12">
+                        <label for="txtClave" class="form-label">Contraseña</label>
+                        <input type="password" class="form-control" id="txtClave" name="Clave" required>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" id="btnConfirmar" class="btn btn-primary">Confirmar</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+@section Scripts{
+    <script>
+
+        function fnCargarListaRoles() {
+            $.ajax({
+                method: 'POST',
+                url: '@Url.Action("ObtenerRoles", "Usuario")',
+                datatype: JSON,
+                success: function (lista) {
+                    $("#slRol, #slRolB").append("<option value='0'> SELECCIONAR</option>");
+                    for (var i = 0; i < lista.length; i++) {
+                        $("#slRol, #slRolB").append("<option value='" + lista[i].Id + "'>" + lista[i].Nombre + "</option>");
+                    }
+                },
+                error: function (error) {
+                    alert("Error:" + error.statusText);
+                }
+
+            });
+        }
+
+        $("#btnBuscar").click(function () {
+                fnBuscar();
+        });
+
+         function fnBuscar() {
+            $.ajax({
+                method: 'POST',
+                url: '@Url.Action("Buscar", "Usuario")',
+                data: $("#frmBuscar").serialize(),
+                datatype: JSON,
+                success: function (lista) {
+                    var tbody = $("#tbDatosMostrar > tbody");
+                    tbody.empty();
+                    for (var i = 0; i < lista.length; i++) {
+                        var fila = "<tr>\
+                                        <td>" + lista[i].Id + "</td>\
+                                        <td>" + lista[i].Nombre + "</td>\
+                                        <td>" + lista[i].Correo + "</td>\
+                                        <td>" + lista[i].Rol.Nombre + "</td>\
+                                        <td>\
+                                             <button type = 'button' class =' btn btn-warning me-2' onclick ='fnObtenerDatosModificar(" + lista[i].Id + ")'>Editar</button>\
+                                             <button type = 'button' class =' btn btn-danger' onclick ='fnEliminar(" + lista[i].Id + ")'>Eliminar</button> </td>\
+                                        </td>\
+                                    </tr>";
+                        tbody.append(fila);
+                    }
+                },
+                error: function (error) {
+                    alert("Error:" + error.statusText);
+                }
+            });
+         }
+
+const mdlMantUsuario = new bootstrap.Modal('#mdlMantUsuario', { keyboard: false, backdrop: 'static' });
+
+         $("#btnNuevo").click(function () {
+             $("#mdlTitulo").text("Nuevo usuario");
+             mdlMantUsuario.show();
+         });
+
+         function fnObtenerDatosModificar(pId) {
+             $.ajax({
+                 method: 'POST',
+                 url: '@Url.Action("BuscarPorId", "Usuario")',
+                 data: { 'pId': pId },
+                 datatype: JSON,
+                 success: function (objUsuario) {
+                     $("#txtId").val(objUsuario.Id);
+                     $("#slRol").val(objUsuario.IdRol);
+                     $("#txtNombre").val(objUsuario.Nombre);
+                     $("#txtCorreo").val(objUsuario.Correo);
+                     $("#txtEstado").val(objUsuario.Estado);
+
+                    //Deshabilitar input de clave
+                     $("#txtClave").attr("disabled", "disabled");
+
+                    $("#mdlTitulo").text("Editar usuario");
+                    mdlMantUsuario.show();
+                 },
+                 error: function (error) {
+                     alert("Error:" + error.statusText);
+                 }
+             });
+         }
+        document.getElementById("mdlMantUsuario").addEventListener('hidden.bs.modal', function () {
+            //Evento cunado se cierra el modal
+            //Limpriar controles del formulario modal
+            $("#txtId").val("");
+            $("#txtNombre").val("");
+            $("#txtCorreo").val("");
+
+            $("#slRol").val(0);
+            $("#txtClave").val("");
+            //habilitar imput de clave
+            $("#txtClave").removeAttr("disabled");
+        });
+ 
+        function fnConfirmarDatos() {
+            var urlAccion = '@Url.Action("Guardar", "Usuario")';
+            if (parseInt($("#txtId").val()) > 0) {
+                urlAccion = '@Url.Action("Modificar", "Usuario")';
+
+            }
+            $.ajax({
+                method: 'POST',
+                url: urlAccion,
+                data: $("#frmMantUsuario").serialize(),
+                datatype: JSON,
+                success: function (resultado) {
+                    if (resultado > 0) {
+                        //alert("Los datos se guardaron exitosamente");
+                        Swal.fire(
+                            'Listo',
+                            'Los datos se guardaron exitosamente',
+                            'success'
+                        )
+                        fnBuscar();
+                        mdlMantUsuario.hide();
+                    }
+                    else {
+                        //alert("Ocurrio un error al guardar los datos en el servidor");
+                        Swal.fire(
+                            'Alerta',
+                            'Ocurrio un error al guardar los datos en el servidor',
+                            'warning'
+                        )
+                    }
+                },
+                error: function (error) {
+                    alert("Error: " + error.statusText);
+                }
+
+            });
+
+        }
+        $("#btnConfirmar").click(function () {
+            fnConfirmarDatos();
+
+        });
+
+
+         function fnEliminar(pId) {
+             Swal.fire({
+                 title: 'Seguro?',
+                 text: "¿Está seguro de eliminar el registro seleccionado?",
+                 icon: 'warning',
+                 showCancelButton: true,
+                 confirmButtonColor: '#3085d6',
+                 cancelButtonColor: '#d33',
+                 confirmButtonText: 'Si, eliminar!'
+             }).then((result) => {
+                 if (result.isConfirmed) {
+                     $.ajax({
+                         method: 'POST',
+                         url: '@Url.Action("Eliminar","Usuario")',
+                         data: { 'Id': pId },
+                         datatype: JSON,
+                         success: function (resultado) {
+
+                                 //alert("El registro se elimino exitosamente");
+                                 Swal.fire(
+                                     'Listo!',
+                                     'El registro se elimino exitosamente.',
+                                     'success'
+                                 )
+                                 fnBuscar();
+
+                         },
+                         error: function (error) {
+                             alert("Error:" + error.statusText);
+                         }
+                     });
+                 }
+             });
+         }
+
+
+
+
+
+        $(document).ready(function () {
+            fnCargarListaRoles();
+
+        });
+    </script>
+}

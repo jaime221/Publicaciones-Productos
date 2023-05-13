@@ -1,0 +1,12 @@
+C:\Users\MINEDUCYT\source\repos\Publicaciones\Publicacion.BL\obj\Debug\Publicacion.BL.csproj.AssemblyReference.cache
+C:\Users\MINEDUCYT\source\repos\Publicaciones\Publicacion.BL\obj\Debug\Publicacion.BL.csproj.CoreCompileInputs.cache
+C:\Users\MINEDUCYT\source\repos\Publicaciones\Publicacion.BL\bin\Debug\Publicacion.BL.dll
+C:\Users\MINEDUCYT\source\repos\Publicaciones\Publicacion.BL\bin\Debug\Publicacion.BL.pdb
+C:\Users\MINEDUCYT\source\repos\Publicaciones\Publicacion.BL\bin\Debug\Publicacion.DAL.dll
+C:\Users\MINEDUCYT\source\repos\Publicaciones\Publicacion.BL\bin\Debug\Publicacion.EN.dll
+C:\Users\MINEDUCYT\source\repos\Publicaciones\Publicacion.BL\bin\Debug\Publicacion.DAL.pdb
+C:\Users\MINEDUCYT\source\repos\Publicaciones\Publicacion.BL\bin\Debug\Publicacion.EN.pdb
+C:\Users\MINEDUCYT\source\repos\Publicaciones\Publicacion.BL\bin\Debug\Publicacion.EN.dll.config
+C:\Users\MINEDUCYT\source\repos\Publicaciones\Publicacion.BL\obj\Debug\Publicacion.BL.csproj.CopyComplete
+C:\Users\MINEDUCYT\source\repos\Publicaciones\Publicacion.BL\obj\Debug\Publicacion.BL.dll
+C:\Users\MINEDUCYT\source\repos\Publicaciones\Publicacion.BL\obj\Debug\Publicacion.BL.pdb

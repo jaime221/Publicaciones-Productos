@@ -1,0 +1,10 @@
+C:\Users\MINEDUCYT\source\repos\Publicaciones\Publicacion.DAL\bin\Debug\Publicacion.DAL.dll
+C:\Users\MINEDUCYT\source\repos\Publicaciones\Publicacion.DAL\bin\Debug\Publicacion.DAL.pdb
+C:\Users\MINEDUCYT\source\repos\Publicaciones\Publicacion.DAL\bin\Debug\Publicacion.EN.dll
+C:\Users\MINEDUCYT\source\repos\Publicaciones\Publicacion.DAL\bin\Debug\Publicacion.EN.pdb
+C:\Users\MINEDUCYT\source\repos\Publicaciones\Publicacion.DAL\bin\Debug\Publicacion.EN.dll.config
+C:\Users\MINEDUCYT\source\repos\Publicaciones\Publicacion.DAL\obj\Debug\Publicacion.DAL.csproj.AssemblyReference.cache
+C:\Users\MINEDUCYT\source\repos\Publicaciones\Publicacion.DAL\obj\Debug\Publicacion.DAL.csproj.CoreCompileInputs.cache
+C:\Users\MINEDUCYT\source\repos\Publicaciones\Publicacion.DAL\obj\Debug\Publicacion.DAL.csproj.CopyComplete
+C:\Users\MINEDUCYT\source\repos\Publicaciones\Publicacion.DAL\obj\Debug\Publicacion.DAL.dll
+C:\Users\MINEDUCYT\source\repos\Publicaciones\Publicacion.DAL\obj\Debug\Publicacion.DAL.pdb

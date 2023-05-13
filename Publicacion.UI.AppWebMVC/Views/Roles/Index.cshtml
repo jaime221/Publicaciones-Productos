@@ -1,0 +1,210 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="row justify-content-center">
+    <div class="col-6">
+        <form class="card text-bg-light mb-3" id="frmBuscar">
+            <div class="card-header text-center fw-bold h1 bg-primary text-light"> Mantenimiento de Roles </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-7">
+                        <label for="txtNombreB" class="form-label">Nombre:</label>
+                        <input type="text" class="form-control" id="Nombre" name="Nombre" />
+                    </div>
+                    <div class="col-5 d-flex align-items-end">
+
+                        <button type="button" id="btnBuscar" class="btn btn-primary me-2">Buscar  </button>
+                        <button type="button" id="btnNuevo" class="btn btn-secondary me-2">Nuevo  </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="w-100"> </div><!--brinco forsado-->
+    <div class="col-5">
+        <table class="table table-striped table-border" id="tbDatosRol">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nombre</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+<!----Modal----------->
+<div class="modal" tabindex="-1" id="mdlMantRol">
+    <form class="modal-dialog" id="frmMantRol">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="mdlTitulo">  Nuevo Rol  </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" arial-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="txtId" name="Id" />
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label for="txtNombre" class="col-form-label">Nombre:</label>
+                        <input type="text" class="form-control" id="txtNombre" name="Nombre" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="btnConfirmar">Confirmar</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+@section Scripts{
+    <script>
+        $("#btnBuscar").click(function () {
+                fnBuscar();
+        });
+
+         function fnBuscar() {
+            $.ajax({
+                method: 'POST',
+                url: '@Url.Action("Buscar", "Roles")',
+                data: $("#frmBuscar").serialize(),
+                datatype: JSON,
+                success: function (lista) {
+                    var tbody = $("#tbDatosRol > tbody");
+                    tbody.empty();
+                    for (var i = 0; i < lista.length; i++) {
+                        var fila = "<tr>\
+                                        <td>" + lista[i].Id + "</td>\
+                                        <td>" + lista[i].Nombre + "</td>\
+                                        <td>\
+                                             <button type = 'button' class =' btn btn-warning me-2' onclick ='fnObtenerDatosModificar(" + lista[i].Id + ")'>Editar</button>\
+                                             <button type = 'button' class =' btn btn-danger' onclick ='fnEliminar(" + lista[i].Id + ")'>Eliminar</button> </td>\
+                                        </td>\
+                                    </tr>";
+                        tbody.append(fila);
+                    }
+                },
+                error: function (error) {
+                    alert("Error:" + error.statusText);
+                }
+            });
+         }
+        const mdlMantRol = new bootstrap.Modal('#mdlMantRol', { Keyboard: false, backdrop: 'Static' });
+
+        $("#btnNuevo").click(function () {
+            $("#mdlTitulo").text("Nuevo Rol");
+            mdlMantRol.show();
+        });
+        function fnObtenerDatosModificar(pId) {
+            $.ajax({
+                method: 'POST',
+                url: '@Url.Action("BuscarPorId", "Roles")',
+                data: { 'pId': pId },
+                datatype: JSON,
+                success: function (objRol) {
+                    $("#txtId").val(objRol.Id);
+                    $("#txtNombre").val(objRol.Nombre);
+
+                    $("#mdlTitulo").text("Editar Rol");
+                    mdlMantRol.show();
+
+
+                },
+                error: function (error) {
+                    alert("Error: " + error.statusText);
+                }
+            });
+
+        }
+        document.getElementById("mdlMantRol").addEventListener('hidden.bs.modal', function () {
+            $("#txtId").val("");
+            $("#txtNombre").val("");
+
+        });
+        function fnConfirmarDatos() {
+            var urlAccion = '@Url.Action("Guardar", "Roles")';
+            if (parseInt($("#txtId").val()) > 0) {
+                urlAccion = '@Url.Action("Modificar", "Roles")';
+
+            }
+            $.ajax({
+                method: 'POST',
+                url: urlAccion,
+                data: $("#frmMantRol").serialize(),
+                datatype: JSON,
+                success: function (resultado) {
+                    if (resultado > 0) {
+                        //alert("Los datos se guardaron exitosamente");
+                        Swal.fire(
+                            'Listo',
+                            'Los datos se guardaron exitosamente',
+                            'success'
+                        )
+                        fnBuscar();
+                        mdlMantRol.hide();
+                    }
+                    else {
+                        //alert("Ocurrio un error al guardar los datos en el servidor");
+                        Swal.fire(
+                            'Alerta',
+                            'Ocurrio un error al guardar los datos en el servidor',
+                            'warning'
+                        )
+                    }
+                },
+                error: function (error) {
+                    alert("Error: " + error.statusText);
+                }
+
+            });
+
+        }
+        $("#btnConfirmar").click(function () {
+            fnConfirmarDatos();
+
+        });
+
+        function fnEliminar(pId) {
+            Swal.fire({
+                title: 'Seguro',
+                text: "¿Está seguro de eliminar el registro seleccionado?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Si, eliminar!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        method: 'POST',
+                        url: '@Url.Action("Eliminar","Home")',
+                        data: { 'Id': pId },
+                        datatype: JSON,
+                        success: function (resultado) {
+
+                            //alert("El registro se elimino exitosamente");
+                            Swal.fire(
+                                'Listo!',
+                                'El registro se elimino exitosamente.',
+                                'success'
+                            );
+                            fnBuscar();
+
+
+                        },
+                        error: function (error) {
+                            alert("Error: " + error.statusText);
+                        }
+                    });
+                }
+
+            });
+        }
+    </script>
+}
